@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import currency from 'currency.js';
 
-interface Props {
+export interface Props {
   currencySymbol: string;
   currencyValue: number;
   cryptoValue: number;
@@ -17,7 +17,6 @@ const CardContainer = styled.div`
   flex-direction: column;
   margin: 0 8px 0 8px;
   border-radius: 4px;
-  box-shadow: 6px 10px 30px -19px rgba(246, 245, 246, 1);
   padding: 8px;
 `;
 
@@ -48,10 +47,12 @@ export const CryptoValueCard: React.FC<Props> = (props: Props) => {
 
   return (
     <CardContainer>
-      <SymbolText>{props.currencySymbol}</SymbolText>
-      <QuoteValue>
+      <SymbolText data-testid="quote-symbol">{props.currencySymbol}</SymbolText>
+      <QuoteValue data-testid="quote-value">
         {currency(cryptoQuote, {
           precision: 2,
+          decimal: ',',
+          separator: '.',
         }).format()}
       </QuoteValue>
     </CardContainer>

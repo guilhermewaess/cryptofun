@@ -35,7 +35,8 @@ const Button = styled.button`
   padding: 10px;
   font-weight: 400;
   font-size: 16px;
-  color: #ab9388;
+  color: #000;
+  cursor: pointer;
 
   :focus {
     outline: none;
@@ -49,15 +50,15 @@ const Button = styled.button`
 
   :disabled {
     opacity: 0.5;
+    cursor: not-allowed;
   }
 `;
 
-export const SearchInput: React.FC<Props> = (props: Props) => {
+export const Search: React.FC<Props> = (props: Props) => {
   const [searchValue, setSearchValue] = useState('');
 
   const onSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    debugger;
     props.onSearch(searchValue.toUpperCase());
   };
 
