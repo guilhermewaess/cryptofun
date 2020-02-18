@@ -28,7 +28,8 @@ export const CryptoValueCard: React.FC<Props> = (props: Props) => {
   useEffect(() => {
     const quote = calculateQuote();
     setCryptoQuote(quote);
-  }, [props.cryptoValue]);
+  }, [props.cryptoValue]); // eslint-disable-line react-hooks/exhaustive-deps
+  //https://github.com/facebook/create-react-app/issues/6880#issuecomment-488158024
 
   return (
     <CardContainer>
