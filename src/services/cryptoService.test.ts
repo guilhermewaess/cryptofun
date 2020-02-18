@@ -67,6 +67,10 @@ describe('cryptoService', () => {
       beforeEach(() => {
         returnedValue = {
           mocked: 'mocked',
+          status: {
+            // eslint-disable-next-line @typescript-eslint/camelcase
+            error_code: 0,
+          },
         };
         fetchMock.mockReturnValue(
           Promise.resolve({
@@ -93,6 +97,33 @@ describe('cryptoService', () => {
       });
     });
     describe('when getCryptoValue returns error', () => {
+      let errorMessage;
+
+      beforeEach(() => {
+        errorMessage = 'Incorrect symbol';
+        fetchMock.mockReturnValue(
+          Promise.resolve({
+            ok: true,
+            json: () =>
+              Promise.resolve({
+                status: {
+                  // eslint-disable-next-line @typescript-eslint/camelcase
+                  error_code: 400,
+                  // eslint-disable-next-line @typescript-eslint/camelcase
+                  error_message: errorMessage,
+                },
+              }),
+          }),
+        );
+      });
+      it('should throw the error with error_message', (done: Function) => {
+        expect(getCryptoValue(cryptoSymbol)).rejects.toThrow(errorMessage);
+        done();
+      });
+      // it('should throw the error with proper message', async (done: Function) => {
+      // });
+    });
+    describe('when getCryptoValue fails to connect on the API', () => {
       beforeEach(() => {
         fetchMock.mockReturnValue(
           Promise.resolve({
@@ -100,7 +131,7 @@ describe('cryptoService', () => {
           }),
         );
       });
-      it('should throw specific error', async (done: Function) => {
+      it('should throw the error with error_message', (done: Function) => {
         expect(getCryptoValue(cryptoSymbol)).rejects.toThrow('Error on getting crypto value');
         done();
       });

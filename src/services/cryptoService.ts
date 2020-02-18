@@ -24,8 +24,14 @@ export async function getCryptoValue(cryptoSymbol: string): Promise<CryptoRespon
   // });
 
   if (response.ok) {
-    return response.json();
+    const parsedResponse = (await response.json()) as CryptoResponse;
+    if (parsedResponse.status.error_code === 0) {
+      return parsedResponse;
+    }
+
+    throw new Error(parsedResponse.status.error_message as string);
   }
+
   throw new Error('Error on getting crypto value');
 
   // return Promise.resolve({
