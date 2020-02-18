@@ -9,6 +9,10 @@ import { CurrencyRates } from './interfaces';
 
 const CryptoContainer = styled.section`
   width: 80%;
+  height: 900px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   margin: auto;
 `;
 
