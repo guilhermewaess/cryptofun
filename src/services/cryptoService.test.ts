@@ -1,4 +1,5 @@
 import { getCurrency, getCryptoValue } from './cryptoService';
+import { CurrencyResponse, CryptoResponse } from '../interfaces';
 
 describe('cryptoService', () => {
   let fetchMock: jest.SpyInstance;
@@ -11,7 +12,7 @@ describe('cryptoService', () => {
   });
 
   describe('when calls getCurrency', () => {
-    let returnedValue;
+    let returnedValue: CurrencyResponse;
     it('should call the correct api', async () => {
       await getCurrency();
       expect(fetchMock).toHaveBeenCalledWith('https://api.exchangeratesapi.io/latest?symbols=USD,BRL,GBP,AUD');
@@ -57,8 +58,8 @@ describe('cryptoService', () => {
   });
 
   describe('when calls getCryptoValue', () => {
-    let returnedValue;
-    let cryptoSymbol;
+    let returnedValue: Partial<CryptoResponse>;
+    let cryptoSymbol: string;
 
     beforeEach(() => {
       cryptoSymbol = 'BTC';
@@ -66,10 +67,16 @@ describe('cryptoService', () => {
     describe('and getCryptoValue returns 200', () => {
       beforeEach(() => {
         returnedValue = {
-          mocked: 'mocked',
           status: {
             // eslint-disable-next-line @typescript-eslint/camelcase
             error_code: 0,
+            // eslint-disable-next-line @typescript-eslint/camelcase
+            error_message: '',
+            // eslint-disable-next-line @typescript-eslint/camelcase
+            credit_count: 0,
+            elapsed: 0,
+            timestamp: '',
+            notice: null,
           },
         };
         fetchMock.mockReturnValue(
@@ -97,13 +104,13 @@ describe('cryptoService', () => {
       });
     });
     describe('when getCryptoValue returns error', () => {
-      let errorMessage;
+      let errorMessage: string;
 
       beforeEach(() => {
         errorMessage = 'Incorrect symbol';
         fetchMock.mockReturnValue(
           Promise.resolve({
-            ok: true,
+            ok: false,
             json: () =>
               Promise.resolve({
                 status: {
@@ -120,14 +127,13 @@ describe('cryptoService', () => {
         expect(getCryptoValue(cryptoSymbol)).rejects.toThrow(errorMessage);
         done();
       });
-      // it('should throw the error with proper message', async (done: Function) => {
-      // });
     });
     describe('when getCryptoValue fails to connect on the API', () => {
       beforeEach(() => {
         fetchMock.mockReturnValue(
           Promise.resolve({
             ok: false,
+            json: () => Promise.resolve({}),
           }),
         );
       });
