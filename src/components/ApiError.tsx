@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-interface Props {
+export interface Props {
   error: string;
   onDismiss: () => void;
 }
@@ -45,9 +45,9 @@ const DismissBtn = styled.div`
 export const ApiError: React.FC<Props> = ({ error, onDismiss }: Props) => {
   return (
     <ErrorContainer>
-      <span>{error}</span>
+      <span data-testid="error-msg">{error}</span>
       <Spacer />
-      <DismissBtn onClick={onDismiss} />
+      <DismissBtn data-testid="dismiss-btn" onClick={onDismiss} />
     </ErrorContainer>
   );
 };

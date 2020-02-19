@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-interface Props {
+export interface Props {
   onSearch: (searchTerm: string) => void;
 }
 
@@ -65,11 +65,12 @@ export const Search: React.FC<Props> = (props: Props) => {
   return (
     <Form onSubmit={onSubmit}>
       <Input
+        data-testid="search-input"
         placeholder="Example: BTC"
         value={searchValue}
         onChange={({ target: { value } }): void => setSearchValue(value)}
       />
-      <Button disabled={!searchValue} type="submit">
+      <Button data-testid="submit-btn" disabled={!searchValue} type="submit">
         Check Value
       </Button>
     </Form>

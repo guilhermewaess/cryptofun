@@ -21,10 +21,6 @@ const CryptoCardsContainer = styled.section`
   display: flex;
 `;
 
-// const ApiErrorWrapper = styled(ApiError)`
-//   margin-top: 48px;
-// `;
-
 export const App: React.FC = () => {
   const [currencyRates, setCurrencyRates] = useState({} as CurrencyRates);
   const [cryptoValue, setCryptoValue] = useState(0);
@@ -38,7 +34,6 @@ export const App: React.FC = () => {
     try {
       const { data } = await getCryptoValue(searchTerm);
       const cryptoValue = data[searchTerm].quote.EUR.price;
-
       setCryptoValue(cryptoValue);
     } catch (error) {
       setApiError(error.message);
@@ -52,7 +47,7 @@ export const App: React.FC = () => {
   return (
     <Home>
       <GlobalStyles />
-      <CryptoContainer>
+      <CryptoContainer data-testid="crypto-container">
         <Search onSearch={onSearch}></Search>
         <CryptoCardsContainer>
           {Object.keys(currencyRates).map(key => (
