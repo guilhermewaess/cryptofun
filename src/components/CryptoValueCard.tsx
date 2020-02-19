@@ -50,7 +50,7 @@ export const CryptoValueCard: React.FC<Props> = (props: Props) => {
       <SymbolText data-testid="quote-symbol">{props.currencySymbol}</SymbolText>
       <QuoteValue data-testid="quote-value">
         {currency(cryptoQuote, {
-          precision: 2,
+          precision: 4,
           decimal: ',',
           separator: '.',
         }).format()}

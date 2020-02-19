@@ -21,19 +21,30 @@ const CryptoCardsContainer = styled.section`
   display: flex;
 `;
 
+const CurrentSearchText = styled.div`
+  text-align: center;
+  color: #535557;
+  margin-bottom: 40px;
+  font-size: 26px;
+`;
+
 export const App: React.FC = () => {
   const [currencyRates, setCurrencyRates] = useState({} as CurrencyRates);
   const [cryptoValue, setCryptoValue] = useState(0);
   const [apiError, setApiError] = useState('');
+  const [currentSearch, setCurrentSearch] = useState('');
 
   useEffect(() => {
-    getCurrency().then(({ rates }) => setCurrencyRates(rates));
+    getCurrency()
+      .then(({ rates }) => setCurrencyRates(rates))
+      .catch(error => setApiError(error.message));
   }, []);
 
   const onSearch = async (searchTerm: string): Promise<void> => {
     try {
       const { data } = await getCryptoValue(searchTerm);
       const cryptoValue = data[searchTerm].quote.EUR.price;
+      setCurrentSearch(searchTerm);
       setCryptoValue(cryptoValue);
     } catch (error) {
       setApiError(error.message);
@@ -49,6 +60,11 @@ export const App: React.FC = () => {
       <GlobalStyles />
       <CryptoContainer data-testid="crypto-container">
         <Search onSearch={onSearch}></Search>
+        {!!currentSearch && (
+          <CurrentSearchText data-testid="current-search-text">
+            Current showing quotes for: <span style={{ fontWeight: 'bold' }}>{currentSearch}</span>
+          </CurrentSearchText>
+        )}
         <CryptoCardsContainer>
           {Object.keys(currencyRates).map(key => (
             <CryptoValueCard

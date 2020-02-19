@@ -23,7 +23,6 @@ const Input = styled.input`
   transition: all 0.2s;
 
   :focus {
-    outline: none;
     box-shadow: 0px 2px 2px 2px rgba(0, 0, 0, 0.3);
     transform: scale(1.01);
   }
@@ -37,19 +36,20 @@ const Button = styled.button`
   font-size: 16px;
   color: #000;
   cursor: pointer;
+  box-shadow: 0px 2px 2px 2px rgba(0, 0, 0, 0.3);
 
   :focus {
     outline: none;
   }
 
   :hover {
+    transform: scale(0.99);
+    box-shadow: none;
     outline: none;
-    box-shadow: 0px 2px 2px 2px rgba(0, 0, 0, 0.3);
-    transform: scale(1.01);
   }
 
   :disabled {
-    opacity: 0.5;
+    opacity: 0.2;
     cursor: not-allowed;
   }
 `;

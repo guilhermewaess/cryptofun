@@ -19,6 +19,6 @@ describe('CryptoValueCard', () => {
   it('should show the crypto value in australian dolar', () => {
     const { getByTestId } = render(<CryptoValueCard {...props} />);
     const currentText = getByTestId('quote-value').textContent;
-    expect(currentText).toEqual('15.205,00');
+    expect(currentText).toEqual('15.204,9950');
   });
 });

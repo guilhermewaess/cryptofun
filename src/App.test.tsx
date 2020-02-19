@@ -1,4 +1,4 @@
-import { fireEvent, render, RenderResult, waitForElement, act, wait, waitForDomChange } from '@testing-library/react';
+import { fireEvent, render, waitForElement, waitForDomChange } from '@testing-library/react';
 import React from 'react';
 import { App } from './App';
 import { CurrencyResponse } from './interfaces';
@@ -21,23 +21,44 @@ describe('App', () => {
     };
   });
   describe('when mounted', () => {
-    beforeEach(() => {
-      getCurrencyMock.mockImplementation(() => Promise.resolve(currencyRates));
-    });
-    it('should call getCurrencies', async (done: Function) => {
-      const { getByTestId } = render(<App />);
-      await waitForElement(() => {
-        getByTestId('crypto-container');
-        expect(getCurrencyMock).toHaveBeenCalledTimes(1);
-        done();
+    describe('and the currency API returns error', () => {
+      beforeEach(() => {
+        getCurrencyMock.mockImplementation(() => Promise.reject(new Error('error')));
+      });
+      it('should show the error component', async (done: Function) => {
+        const { getByTestId } = render(<App />);
+        await waitForElement(() => {
+          expect(getByTestId('error-msg')).toBeInTheDocument();
+          done();
+        });
       });
     });
-    it('should mount crypto cards', async (done: Function) => {
-      const { getAllByTestId } = render(<App />);
-      await waitForElement(() => {
-        const cards = getAllByTestId('crypto-value-card');
-        expect(cards.length).toEqual(5);
-        done();
+    describe('and then currency API returns ok', () => {
+      beforeEach(() => {
+        getCurrencyMock.mockImplementation(() => Promise.resolve(currencyRates));
+      });
+      it('should call getCurrencies', async (done: Function) => {
+        const { getByTestId } = render(<App />);
+        await waitForElement(() => {
+          getByTestId('crypto-container');
+          expect(getCurrencyMock).toHaveBeenCalledTimes(1);
+          done();
+        });
+      });
+      it('should mount crypto cards', async (done: Function) => {
+        const { getAllByTestId } = render(<App />);
+        await waitForElement(() => {
+          const cards = getAllByTestId('crypto-value-card');
+          expect(cards.length).toEqual(5);
+          done();
+        });
+      });
+      it('should not show currentSearchText', async (done: Function) => {
+        const { queryByTestId } = render(<App />);
+        await waitForElement(() => {
+          expect(queryByTestId('current-search-text')).toBeNull();
+          done();
+        });
       });
     });
   });
@@ -56,7 +77,7 @@ describe('App', () => {
       submitButton.click();
       expect(getCryptoValueMock).toHaveBeenCalledWith('BTC');
     });
-    describe('and the api throws error', () => {
+    describe('and the crypt api throws error', () => {
       beforeEach(() => {
         getCryptoValueMock.mockImplementation(() => {
           throw new Error('error');
@@ -107,12 +128,22 @@ describe('App', () => {
         const { getByTestId, getAllByTestId } = render(<App />);
         const searchInput = getByTestId('search-input');
         const submitButton = getByTestId('submit-btn');
-        fireEvent.change(searchInput, { target: { value: 'BTC' } });
+        fireEvent.change(searchInput, { target: { value: searchTerm } });
         submitButton.click();
 
         await waitForDomChange();
-        expect(getAllByTestId('quote-value')[0].textContent).toEqual('1,62');
+        expect(getAllByTestId('quote-value')[0].textContent).toEqual('1,6195');
         done();
+      });
+      it('should show currentSearchText', async () => {
+        const { getByTestId } = render(<App />);
+        const searchInput = getByTestId('search-input');
+        const submitButton = getByTestId('submit-btn');
+        fireEvent.change(searchInput, { target: { value: searchTerm } });
+        submitButton.click();
+
+        await waitForDomChange();
+        expect(getByTestId('current-search-text').textContent).toEqual(`Current showing quotes for: ${searchTerm}`);
       });
     });
   });
