@@ -11,7 +11,7 @@ export async function getCurrency(): Promise<CurrencyResponse> {
 
 export async function getCryptoValue(cryptoSymbol: string): Promise<CryptoResponse> {
   const response = await fetch(`/cryptocurrency/quotes/latest?symbol=${cryptoSymbol}&convert=EUR`, {
-    headers: { 'X-CMC_PRO_API_KEY': '5579485c-802f-4af9-b091-20a1d97f7019' },
+    headers: { 'X-CMC_PRO_API_KEY': process.env.REACT_APP_API_KEY as string },
   });
 
   const parsedResponse = (await response.json()) as CryptoResponse;
